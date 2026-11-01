@@ -147,3 +147,11 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Segredos e dados locais
+*.key
+*.pem
+id_*
+.env*
+*.sqlite
+*.db
