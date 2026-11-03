@@ -155,3 +155,18 @@ id_*
 .env*
 *.sqlite
 *.db
+
+# Adicionado pelo projeto - dados e segredos da aplicação
+app/data/
+app/client/dist/
+
+# Regras acrescentadas conforme especificação do projeto
+.env
+app/data/
+*.sqlite
+*.db
+node_modules/
+app/client/dist/
+app/server/data/
+cookies.txt
+!.env.example

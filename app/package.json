@@ -1,0 +1,25 @@
+{
+  "name": "projeto-aplicado",
+  "version": "1.0.0",
+  "description": "App web seguro - Secure by Design (faculdade)",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "start": "node server/server.js",
+    "dev:server": "node --watch server/server.js",
+    "test": "node --test server/tests/api.test.js",
+    "create-user": "node server/scripts/create-user.js"
+  },
+  "dependencies": {
+    "argon2": "^0.41.1",
+    "better-sqlite3": "^11.6.0",
+    "better-sqlite3-session-store": "^0.1.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-rate-limit": "^7.4.1",
+    "express-session": "^1.18.1",
+    "helmet": "^8.0.0"
+  }
+}
+
