@@ -11,24 +11,57 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Instalar Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Instalar dependências, testar e compilar o front-end
+        working-directory: app
+        run: |
+          npm ci
+          npm test
+          npm run build
+
+      - name: Montar o pacote de deploy
+        run: |
+          mkdir -p pacote/client
+          cp -r app/server pacote/server
+          rm -rf pacote/server/tests
+          cp -r app/client/dist pacote/client/dist
+          cp app/package.json app/package-lock.json pacote/
 
       - name: Configurar SSH
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         run: |
-          install -m 700 -d ~/.ssh
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
           printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
 
       - name: Enviar arquivos
         env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         run: |
-          rsync -rlvz --omit-dir-times --no-perms \
-            --exclude '.well-known' \
-            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes" \
-            public/ "$DEPLOY_USER@$DEPLOY_HOST:/var/www/html/"
+          SSH="ssh -i $HOME/.ssh/deploy_key -o IdentitiesOnly=yes"
+          $SSH "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p /opt/projeto-aplicado/client"
+          rsync -rlvz --delete --omit-dir-times --no-perms -e "$SSH" pacote/server/ "$DEPLOY_USER@$DEPLOY_HOST:/opt/projeto-aplicado/server/"
+          rsync -rlvz --delete --omit-dir-times --no-perms -e "$SSH" pacote/client/dist/ "$DEPLOY_USER@$DEPLOY_HOST:/opt/projeto-aplicado/client/dist/"
+          rsync -lvz --omit-dir-times --no-perms -e "$SSH" pacote/package.json pacote/package-lock.json "$DEPLOY_USER@$DEPLOY_HOST:/opt/projeto-aplicado/"
+
+      - name: Instalar dependências de produção e reiniciar o serviço
+        env:
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          ssh -i "$HOME/.ssh/deploy_key" -o IdentitiesOnly=yes "$DEPLOY_USER@$DEPLOY_HOST" \
+            "cd /opt/projeto-aplicado && npm ci --omit=dev && sudo systemctl restart projeto-aplicado && sleep 4 && systemctl is-active projeto-aplicado"
