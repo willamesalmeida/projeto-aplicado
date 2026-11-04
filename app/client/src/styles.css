@@ -1,0 +1,96 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.pagina {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+}
+
+.topo {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+}
+
+.cartao {
+    width: 100%;
+    max-width: 420px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 24px;
+}
+
+h1 {
+    margin: 0 0 16px;
+    font-size: 1.4rem;
+}
+
+label {
+    display: block;
+    margin: 12px 0 4px;
+    font-size: 0.9rem;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #9ca3af;
+    border-radius: 6px;
+}
+
+input:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 1px;
+}
+
+button {
+    margin-top: 16px;
+    padding: 10px 16px;
+    font-size: 1rem;
+    color: #ffffff;
+    background: #2563eb;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:disabled {
+    background: #93c5fd;
+    cursor: not-allowed;
+}
+
+.botao-sair {
+    margin-top: 0;
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    color: #374151;
+    background: transparent;
+    border: 1px solid #9ca3af;
+}
+
+.erro {
+    margin: 12px 0 0;
+    color: #b91c1c;
+    font-size: 0.9rem;
+}
+
+.detalhe {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
