@@ -170,3 +170,5 @@ app/client/dist/
 app/server/data/
 cookies.txt
 !.env.example
+*.db-wal
+*.db-shm

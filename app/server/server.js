@@ -143,6 +143,11 @@ function criarApp(opcoes = {}) {
   app.use(validarContentType);
 
   // Rotas da API
+  // Impede cache de qualquer resposta da API (inclui o token CSRF e os 401)
+  app.use('/api', (req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store');
+    next();
+  });
   app.use('/api/csrf', criarRotaCsrf({ getNow }));
   app.use('/api/login', criarRotaLogin({ db, getNow }));
   app.use('/api/logout', criarRotaLogout());
@@ -179,12 +184,22 @@ function criarApp(opcoes = {}) {
   // OWASP A02:2025 - Security Misconfiguration: suprime detalhes internos e vazamento de stack traces
   // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {
-    console.error(JSON.stringify({
-      timestamp: new Date().toISOString(),
-      tipo: 'erro_nao_tratado',
-      mensagem: err?.message ?? 'Erro desconhecido',
-    }));
-    res.status(500).json({ erro: 'Erro interno no servidor.' });
+    const status = Number.isInteger(err?.status) && err.status >= 400 && err.status < 500
+      ? err.status
+      : 500;
+
+    if (status === 500) {
+      console.error(JSON.stringify({
+        timestamp: new Date().toISOString(),
+        tipo: 'erro_nao_tratado',
+        mensagem: err?.message ?? 'Erro desconhecido',
+      }));
+      return res.status(500).json({ erro: 'Erro interno no servidor.' });
+    }
+
+    return res.status(status).json({
+      erro: status === 413 ? 'Corpo da requisição muito grande.' : 'Requisição inválida.',
+    });
   });
 
   return app;

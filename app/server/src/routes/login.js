@@ -204,6 +204,7 @@ function criarRotaLogin(opcoes = {}) {
         req.session.username = usuario.username;
         req.session.createdAt = getNow(); // Timestamp de criação para expiração absoluta de 8h
         req.session.previousLogin = previousLogin;
+        req.session.cookie.maxAge = 30 * 60 * 1000;
 
         // Gera novo token CSRF após o login (o anterior não é reaproveitado)
         definirTokenNaSessao(req.session);

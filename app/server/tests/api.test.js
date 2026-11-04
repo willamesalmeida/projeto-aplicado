@@ -576,7 +576,7 @@ describe('Rate limit não penaliza login bem-sucedido', () => {
 
   test('Login bem-sucedido não consome o limite de falhas', async () => {
     // Faz 4 logins bem-sucedidos (não devem contar para o rate limit de falhas)
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 6; i++) {
       const { csrfToken, cookie } = await obterCsrfECookie(ctx.baseUrl);
       const res = await fetch(`${ctx.baseUrl}/api/login`, {
         method: 'POST',

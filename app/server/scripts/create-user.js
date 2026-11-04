@@ -19,7 +19,7 @@ const path = require('path');
 // Carrega configuração (validará SESSION_SECRET se presente, mas aqui não é obrigatório)
 // Para este script, apenas precisamos do DATABASE_PATH
 const dotenv = require('dotenv');
-dotenv.config({ path: path.resolve(__dirname, '..', '..', '..', '.env') });
+dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env') });
 
 const { criarBancoDeDados } = require('../src/db/database');
 const argon2 = require('argon2');
